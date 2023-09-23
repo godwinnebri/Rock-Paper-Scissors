@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
-    
     @State private var userSelection = ""
     @State private var aiSelection = ""
     @State private var result = ""
     @State private var score = 0
     @State private var attempts = 0
+    @State private var gameEnded = false
     
     let userOptions = ["🪨", "📄", "✂️"]
     let aiOptions = ["🪨", "📄", "✂️"]
@@ -89,7 +89,7 @@ struct ContentView: View {
                 VStack {
                     Text("Score: \(score)")
                     Spacer().frame(height: 4)
-                    Text("Attempts: \(attempts)")
+                    Text("Attempts: \(attempts)/10")
                 }
                 .frame(width: 250, height: 100)
                 .background(.gray.opacity(0.1))
@@ -113,6 +113,12 @@ struct ContentView: View {
             } //GROUP 2
         }
         .padding()
+        .alert("👋 Game over", isPresented: $gameEnded) {
+            Button ("Restart",
+                    action: reset)
+        } message: {
+            Text ("Your score is \(score)/10")
+        }
         //parent vstack
 
     }
@@ -121,6 +127,9 @@ struct ContentView: View {
     //play game function
     private func playGame() {
          aiSelection = aiOptions.randomElement() ?? ""
+        if attempts == 10 {
+            gameEnded = true
+        }
          
          if userSelection == aiSelection {
              result = "It's a tie!"
@@ -133,6 +142,15 @@ struct ContentView: View {
              result = "AI wins!"
          }
      }
+    
+    //reset function
+    private func reset() {
+        userSelection = ""
+        aiSelection = ""
+        result = ""
+        score = 0
+        attempts = 0
+    }
 }
 
 
